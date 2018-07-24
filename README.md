@@ -1,0 +1,2 @@
+# CubersCompanion
+Speedcubing timer app.
