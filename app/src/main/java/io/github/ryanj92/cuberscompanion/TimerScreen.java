@@ -25,6 +25,8 @@ public class TimerScreen extends AppCompatActivity {
 
     boolean timerRunning = false;
 
+    RandomMoveScrambler testScrambler = new RandomMoveScrambler("333");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +38,8 @@ public class TimerScreen extends AppCompatActivity {
         mRightTimerButton = (ImageButton) findViewById(R.id.rightTimerButton);
 
         handler = new Handler();
+
+        mScrambleDisplay.setText(testScrambler.generateScramble());
 
         mLeftTimerButton.setOnClickListener(new View.OnClickListener() {
 
@@ -60,6 +64,7 @@ public class TimerScreen extends AppCompatActivity {
 
                     handler.removeCallbacks(runnable);
                     timerRunning = false;
+                    mScrambleDisplay.setText(testScrambler.generateScramble());
 
                 }
 
