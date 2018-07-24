@@ -36,9 +36,25 @@ public class RandomMoveScrambler {
             while (!validMove) {
                 currentMoveFace = (int) (Math.random() * 6) + 1;
 
-                // fix this so only invalid if previous move was parallel to current move
-                if (currentMoveFace != prevMoveFace && currentMoveFace != prev2MoveFace) {
-                    validMove = true;
+                if (currentMoveFace != prevMoveFace) {
+
+                    if (currentMoveFace == prev2MoveFace) {
+
+                        if (currentMoveFace == 1 && prevMoveFace == 2
+                                || currentMoveFace == 2 && prevMoveFace == 1
+                                || currentMoveFace == 3 && prevMoveFace == 4
+                                || currentMoveFace == 4 && prevMoveFace == 3
+                                || currentMoveFace == 5 && prevMoveFace == 6
+                                || currentMoveFace == 6 && prevMoveFace == 5) {
+                            validMove = false;
+                        } else {
+                            validMove = true;
+                        }
+
+                    } else {
+                        validMove = true;
+                    }
+
                 } else {
                     validMove = false;
                 }
