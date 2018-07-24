@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Cuber\'s Companion</string>
+
+    <string name="left_timer_button_desc">Left Timer Button</string>
+    <string name="right_timer_button_desc">Right Timer Button</string>
+    <string name="time_display_desc">Time Display</string>
+    <string name="scramble_display_desc">Scramble Display</string>
+
+    <string name="sampleTime">0:00.000</string>
+    <string name="sampleScramble">Scramble goes here</string>
 </resources>
