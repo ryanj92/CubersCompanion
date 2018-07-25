@@ -1,102 +1,134 @@
 package io.github.ryanj92.cuberscompanion;
 
-import java.util.ArrayList;
-
 public class RandomMoveScrambler {
 
     String puzzleType;
-    int scrambleLength;
+
+    String[] faces222 = new String[]{"U","R","F"};
+    String[] faces333 = new String[]{"U","D","L","R","F","B"};
+    String[] faces444_555 = new String[]{"U","u","D","d","L","l","R","r","F","f","B","b"};
+    String[] faces666_777 = new String[]{"U","u","3u","D","d","3d",
+            "L","l","3l","R","r","3r",
+            "F","f","3f","B","b","3b"};
+    int turnableLayersPerAxis;
+
+    String[] dirsCubic = new String[]{"","\'","2"};
+
+    String[] facesError = new String[]{"Error: Invalid puzzle type"};
 
     RandomMoveScrambler(String puzzleType) {
         this.puzzleType = puzzleType;
     }
 
-    public String generateScramble(){
+    public boolean validMoveCheck(String checkMove, String[] moveQueue) {
 
-        StringBuilder scrambleBuilder = new StringBuilder();
+        for (String move : moveQueue) {
 
-        int prevMoveFace = 0;
-        int prev2MoveFace = 0;
-        int currentMoveFace = 0;
-        int currentMoveDir;
+            if (move == null) return true;
+            if (checkMove.equals(move)) return false;
 
-        // determine scramble length
-        switch (puzzleType) {
-            case "333": scrambleLength = 25;
-                        break;
-            default: scrambleLength = 10;
-                     break;
+            if (!(checkMove.toLowerCase().contains("u") && move.toLowerCase().contains("u") ||
+                    checkMove.toLowerCase().contains("u") && move.toLowerCase().contains("d") ||
+                    checkMove.toLowerCase().contains("d") && move.toLowerCase().contains("d") ||
+                    checkMove.toLowerCase().contains("d") && move.toLowerCase().contains("u") ||
+                    checkMove.toLowerCase().contains("l") && move.toLowerCase().contains("l") ||
+                    checkMove.toLowerCase().contains("l") && move.toLowerCase().contains("r") ||
+                    checkMove.toLowerCase().contains("r") && move.toLowerCase().contains("r") ||
+                    checkMove.toLowerCase().contains("r") && move.toLowerCase().contains("l") ||
+                    checkMove.toLowerCase().contains("f") && move.toLowerCase().contains("f") ||
+                    checkMove.toLowerCase().contains("f") && move.toLowerCase().contains("b") ||
+                    checkMove.toLowerCase().contains("b") && move.toLowerCase().contains("b") ||
+                    checkMove.toLowerCase().contains("b") && move.toLowerCase().contains("f"))) {
+                return true;
+            }
         }
+
+        return true;
+    }
+
+    public String generateScramble() {
+
+        StringBuilder scrambleBuild = new StringBuilder();
+
+        int scrambleLength;
+        String[] faceSet;
+        String[] dirSet;
+
+        int curMoveNum,curDirNum;
+        String curMove = "";
+        String curDir = "";
+
+        boolean moveValid;
+
+        if (puzzleType.equals("333")) {
+            scrambleLength = 25;
+            faceSet = faces333.clone();
+            dirSet = dirsCubic.clone();
+            turnableLayersPerAxis = 2;
+        } else if (puzzleType.equals("222")) {
+            scrambleLength = 15;
+            faceSet = faces222.clone();
+            dirSet = dirsCubic.clone();
+            turnableLayersPerAxis = 1;
+        } else if (puzzleType.equals("444")) {
+            scrambleLength = 40;
+            faceSet = faces444_555.clone();
+            dirSet = dirsCubic.clone();
+            turnableLayersPerAxis = 4;
+        } else if (puzzleType.equals("555")) {
+            scrambleLength = 60;
+            faceSet = faces444_555.clone();
+            dirSet = dirsCubic.clone();
+            turnableLayersPerAxis = 4;
+        } else if (puzzleType.equals("666")) {
+            scrambleLength = 80;
+            faceSet = faces666_777.clone();
+            dirSet = dirsCubic.clone();
+            turnableLayersPerAxis = 6;
+        } else if (puzzleType.equals("777")) {
+            scrambleLength = 100;
+            faceSet = faces666_777.clone();
+            dirSet = dirsCubic.clone();
+            turnableLayersPerAxis = 6;
+        } else {
+            scrambleLength = 1;
+            faceSet = facesError.clone();
+            dirSet = new String[]{""};
+            turnableLayersPerAxis = 1;
+        }
+
+        String[] moveQueue = new String[turnableLayersPerAxis];
 
         for (int i = 0; i < scrambleLength; i++) {
 
-            // decide move face
-            boolean validMove = false;
+            moveValid = false;
 
-            while (!validMove) {
-                currentMoveFace = (int) (Math.random() * 6) + 1;
+            while (!moveValid) {
 
-                if (currentMoveFace != prevMoveFace) {
+                curMoveNum = (int) (Math.random() * faceSet.length);
+                curMove = faceSet[curMoveNum];
 
-                    if (currentMoveFace == prev2MoveFace) {
-
-                        if (currentMoveFace == 1 && prevMoveFace == 2
-                                || currentMoveFace == 2 && prevMoveFace == 1
-                                || currentMoveFace == 3 && prevMoveFace == 4
-                                || currentMoveFace == 4 && prevMoveFace == 3
-                                || currentMoveFace == 5 && prevMoveFace == 6
-                                || currentMoveFace == 6 && prevMoveFace == 5) {
-                            validMove = false;
-                        } else {
-                            validMove = true;
-                        }
-
-                    } else {
-                        validMove = true;
-                    }
-
-                } else {
-                    validMove = false;
-                }
+                moveValid = validMoveCheck(curMove,moveQueue);
             }
 
-            switch (currentMoveFace) {
-                case 1: scrambleBuilder.append("R");
-                        break;
-                case 2: scrambleBuilder.append("L");
-                        break;
-                case 3: scrambleBuilder.append("U");
-                        break;
-                case 4: scrambleBuilder.append("D");
-                        break;
-                case 5: scrambleBuilder.append("F");
-                        break;
-                case 6: scrambleBuilder.append("B");
-                        break;
-                default: scrambleBuilder.append("X");
-                         break;
+            scrambleBuild.append(curMove);
+
+            curDirNum = (int) (Math.random() * dirSet.length);
+            curDir = dirSet[curDirNum];
+
+            scrambleBuild.append(curDir);
+
+            if (i < scrambleLength - 1) scrambleBuild.append(" ");
+
+            for (int j = turnableLayersPerAxis - 2; j >= 0 ; j--) {
+                moveQueue[j+1] = moveQueue[j];
             }
-
-            // decide move direction
-            currentMoveDir = (int) (Math.random()*3) + 1;
-
-            switch (currentMoveDir) {
-                case 1: break;
-                case 2: scrambleBuilder.append("\'");
-                        break;
-                case 3: scrambleBuilder.append("2");
-                        break;
-                default: scrambleBuilder.append("Y");
-                         break;
-            }
-
-            prevMoveFace = currentMoveFace;
-            prev2MoveFace = prevMoveFace;
-
-            if (i < scrambleLength - 1) scrambleBuilder.append(" ");
-
+            moveQueue[0] = curMove;
         }
 
-        return scrambleBuilder.toString();
+        return scrambleBuild.toString();
+
     }
+
 }
+

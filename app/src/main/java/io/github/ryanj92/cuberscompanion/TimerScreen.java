@@ -25,7 +25,7 @@ public class TimerScreen extends AppCompatActivity {
 
     boolean timerRunning = false;
 
-    RandomMoveScrambler testScrambler = new RandomMoveScrambler("333");
+    RandomMoveScrambler testScrambler = new RandomMoveScrambler("555");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
